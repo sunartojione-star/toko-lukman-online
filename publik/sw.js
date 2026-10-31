@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lukman-snack-v1';
+const CACHE_NAME = 'lukman-snack-v2';
 const ASSETS_TO_CACHE = [
   './index.html',
   './css/online.css',
