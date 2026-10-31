@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toko Lukman Snack - Belanja Online</title>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Link CSS (Jalur disesuaikan dari dalam folder publik) -->
+    <link rel="stylesheet" href="css/online.css">
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <link rel="apple-touch-icon" href="logo_tokolukman.png">
+
+</head>
+<body>
+
+    <!-- NAVBAR E-COMMERCE -->
+    <header class="ecommerce-header">
+        <div class="header-content">
+            <!-- Brand Logo -->
+           <!-- DENGAN LOGO GAMBAR BARU -->
+<!-- Brand Logo -->
+<a href="#" class="brand-logo" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+   <img src="../logo_tokolukman.png" alt="Logo Lukman Snack" style="height: 38px; width: 38px; object-fit: contain; border-radius: 50%;">
+    <span class="logo-snack" style="font-weight: 800; font-size: 18px; color: #f59e0b;">Lukman</span>
+    <span class="logo-snack" style="font-weight: 800; font-size: 18px; color: #10b981;">Snack</span>
+</a>
+
+            <!-- Search Bar Modern -->
+            <div class="search-box">
+                <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="searchInput" placeholder="Cari camilan atau snack favoritmu...">
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <!-- Tombol Riwayat Pesanan -->
+                <button type="button" class="btn-history-nav" onclick="openHistoryModal()" title="Riwayat Pesanan">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </button>
+
+                <!-- Tombol Keranjang Belanja -->
+                <div class="btn-cart-nav" onclick="openCartModal()" title="Lihat Keranjang">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-count" class="cart-badge">0</span>
+                </div>
+
+                <!-- Status Akun Login (Klik untuk Masuk/Daftar/Profil) -->
+                <div class="user-btn" id="userBtnNav" onclick="toggleAuthModal()" style="cursor: pointer;" title="Akun Pelanggan">
+                    <div class="user-avatar" id="userAvatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span class="user-name-text" id="currentUserDisplay">Masuk / Daftar</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN PRODUK -->
+    <main class="main-container">
+        <div class="section-header">
+            <h1 class="section-title">Semua Produk</h1>
+            
+            <!-- Filter Kategori Kapsul -->
+            <div class="category-filter" id="categoryFilter">
+                <button class="cat-pill active" onclick="filterCategory('Semua', this)">Semua</button>
+                <button class="cat-pill" onclick="filterCategory('Keripik', this)">Keripik</button>
+                <button class="cat-pill" onclick="filterCategory('Permen & Gummy', this)">Permen & Gummy</button>
+                <button class="cat-pill" onclick="filterCategory('Camilan Tradisional', this)">Camilan Tradisional</button>
+                <button class="cat-pill" onclick="filterCategory('Wafer & Biskuit', this)">Wafer & Biskuit</button>
+            </div>
+        </div>
+
+        <!-- Grid Produk Dinamis -->
+        <div id="product-grid" class="product-grid"></div>
+
+        <div id="pagination-container"></div>
+    </main>
+
+    <!-- POPUP KERANJANG -->
+    <div id="cart-modal" class="modal-bg">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-bag-shopping"></i> Keranjang Belanja</h3>
+                <button type="button" class="modal-close" onclick="closeCartModal()">&times;</button>
+            </div>
+
+            <div id="cart-full-list" class="cart-list">
+                <p class="empty-cart-msg">Keranjang kamu masih kosong.</p>
+            </div>
+
+            <div class="modal-footer">
+                <div class="total-section">
+                    <span class="total-label">Total Tagihan</span>
+                    <span id="cart-total-price" class="total-price">Rp 0</span>
+                </div>
+                <button type="button" class="btn-wa-checkout" onclick="checkout()">
+                    <span><i class="fa-brands fa-whatsapp"></i> Pesan Sekarang (WhatsApp)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP RIWAYAT PESANAN ONLINE -->
+    <div id="history-modal" class="modal-bg">
+        <div class="modal-box modal-box-large">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Pesanan Online</h3>
+                <button type="button" class="modal-close" onclick="closeHistoryModal()">&times;</button>
+            </div>
+            <div class="history-content" id="history-list-container">
+                <p class="empty-cart-msg">Memuat data pesanan...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL MASUK / DAFTAR / PROFIL PELANGGAN -->
+    <div id="auth-modal" class="modal-bg">
+        <div class="modal-box" style="max-width: 420px; padding: 24px; background: #fff; border-radius: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+                <h3 id="auth-title" style="margin: 0; font-size: 18px; color: #1e293b;">Akun Pelanggan</h3>
+                <button type="button" class="modal-close" onclick="closeAuthModal()" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748b;">&times;</button>
+            </div>
+
+            <!-- 1. FORM LOGIN -->
+            <div id="login-form-box">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">Nama Lengkap / No. WhatsApp</label>
+                    <input type="text" id="log-identifier" placeholder="KETIK NAMA ATAU NO. WHATSAPP" 
+                           autocomplete="off"
+                           style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; text-transform: uppercase;" 
+                           oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">Password</label>
+                    <input type="password" id="log-pass" placeholder="Ketik Password Anda" 
+                           value="" autocomplete="new-password"
+                           style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box;">
+                </div>
+                <button type="button" onclick="loginCustomer()" style="width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 12px;">
+                    Masuk Sekarang
+                </button>
+                <p style="text-align: center; font-size: 13px; color: #64748b; margin: 0;">
+                    Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color: #0284c7; font-weight: 700; text-decoration: none;">Daftar di sini</a>
+                </p>
+            </div>
+
+            <!-- 2. FORM DAFTAR / REGISTRASI -->
+            <div id="register-form-box" style="display: none;">
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">Nama Lengkap</label>
+                    <input type="text" id="reg-nama" placeholder="Nama Lengkap" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">No. WhatsApp</label>
+                    <input type="text" id="reg-hp" placeholder="Contoh: 08123456789" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">Alamat Lengkap</label>
+                    <input type="text" id="reg-alamat" placeholder="Jalan, RT/RW, Kota" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px;">Buat Password</label>
+                    <input type="password" id="reg-pass" placeholder="Minimal 6 karakter" style="width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box;">
+                </div>
+                <button type="button" onclick="registerCustomer()" style="width: 100%; background: #0284c7; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 12px;">
+                    Daftar Pelanggan Baru
+                </button>
+                <p style="text-align: center; font-size: 13px; color: #64748b; margin: 0;">
+                    Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color: #10b981; font-weight: 700; text-decoration: none;">Masuk</a>
+                </p>
+            </div>
+
+            <!-- 3. PROFIL PELANGGAN AKTIF & TOMBOL KELUAR (LOGOUT) -->
+            <div id="profile-box" style="display: none; text-align: center; padding: 10px 0;">
+                <div style="font-size: 48px; color: #10b981; margin-bottom: 10px;">
+                    <i class="fa-solid fa-circle-user"></i>
+                </div>
+                <h4 id="prof-nama" style="margin: 0 0 6px 0; color: #1e293b; font-size: 18px; font-weight: 700;">-</h4>
+                <p id="prof-hp" style="margin: 0 0 16px 0; color: #64748b; font-size: 14px;">-</p>
+                
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 18px; font-size: 12px; color: #475569;">
+                    Status: <strong style="color: #10b981;">Pelanggan Terdaftar</strong>
+                </div>
+
+                <button type="button" onclick="logoutCustomer()" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar Akun (Log Off)
+                </button>
+            </div>
+        </div>
+    </div>
+
+   <!-- BOTTOM NAVIGATION BAR MODERN -->
+    <nav class="mobile-bottom-nav">
+        <a href="javascript:void(0)" class="nav-item active" onclick="navToHome(this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+
+        <a href="javascript:void(0)" class="nav-item" onclick="openCartModal(); setNavActive(this);">
+            <div class="nav-icon-wrap">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="nav-cart-badge" class="nav-badge">0</span>
+            </div>
+            <span>Keranjang</span>
+        </a>
+
+        <a href="javascript:void(0)" class="nav-item" onclick="openHistoryModal(); setNavActive(this);">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Transaksi</span>
+        </a>
+
+        <a href="javascript:void(0)" class="nav-item" onclick="toggleAuthModal(); setNavActive(this);">
+            <i class="fa-solid fa-user"></i>
+            <span id="nav-user-label">Akun</span>
+        </a>
+    </nav>
+
+    <!-- Script Pendukung -->
+    <script src="js/online.js"></script>
+</body>
+</html>
