@@ -23,13 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Pendaftaran Service Worker PWA
 function registerPWA() {
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('PWA Service Worker terdaftar:', reg.scope))
-                .catch(err => console.log('Gagal mendaftarkan Service Worker:', err));
-        });
-    }
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW aktif:', reg.scope))
+            .catch(err => console.log('SW gagal:', err));
+    });
+}
 }
 
 // 1. Ambil Nama User yang Sedang Login
